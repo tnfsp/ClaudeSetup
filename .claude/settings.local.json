@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -Command \"$path = ''%CD%\\\\setup.ps1''; Write-Host \"\"Path: $path\"\"; Test-Path $path\")"
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -Command \"$path = ''%CD%\\\\setup.ps1''; Write-Host \"\"Path: $path\"\"; Test-Path $path\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"./scripts/install.ps1\" -SkipEnvSetup)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: 修復 PowerShell 腳本語法相容性問題\n\n- 簡化 install.ps1 和 export.ps1 語法\n- 避免 hashtable 陣列語法導致的解析錯誤\n- 新增 tmpclaude-* 到 .gitignore\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
     ]
   }
 }

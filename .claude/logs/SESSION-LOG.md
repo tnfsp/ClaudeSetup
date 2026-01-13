@@ -85,8 +85,8 @@
 - [x] 建立 .env.example
 - [x] 更新 README.md
 - [x] 建立 /update subagent
-- [ ] 初始化 Git repo
-- [ ] 推送到 GitHub
+- [x] 初始化 Git repo（已完成 commit）
+- [ ] 推送到 GitHub（待設定 remote）
 - [ ] 在新電腦上測試完整流程
 
 ---
