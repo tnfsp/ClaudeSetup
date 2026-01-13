@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+out/
+*.log
+
+# Temporary
+tmp/
+temp/
+
+# ClaudeSetup specific
+backups/
+
+# Claude Code cache (don't sync)
+.claude/.credentials.json
+.claude/statsig/
+.claude/cache/
+.claude/telemetry/
+.claude/debug/
+.claude/file-history/
+.claude/paste-cache/
+.claude/plans/
+.claude/plugins/
+.claude/projects/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/todos/
+.claude/history.jsonl
+.claude/stats-cache.json
+
+# Claude temp files
+tmpclaude-*

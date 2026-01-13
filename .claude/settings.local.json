@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -Command \"$path = ''%CD%\\\\setup.ps1''; Write-Host \"\"Path: $path\"\"; Test-Path $path\")"
+    ]
+  }
+}

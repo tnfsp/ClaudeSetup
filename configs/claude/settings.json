@@ -1,0 +1,19 @@
+{
+  "autoUpdaterStatus": "disabled",
+  "mcpServers": {
+    "nous": {
+      "command": "python",
+      "args": [
+        "-m",
+        "nous_mcp.server"
+      ],
+      "cwd": "C:\\Users\\Yuru Hung\\Desktop\\Project\\數位分身",
+      "env": {
+        "PYTHONPATH": "C:\\Users\\Yuru Hung\\Desktop\\Project\\數位分身"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "claude-mem@thedotmack": true
+  }
+}
