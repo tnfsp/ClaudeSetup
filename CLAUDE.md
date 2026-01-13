@@ -123,9 +123,39 @@ README.md               # 給人類開發者
 
 ---
 
+## 日結流程 (`/daily-summary`)
+
+當專案完成或一天結束時，執行 `/daily-summary` 進行日結：
+
+1. **Heptabase Journal**: 寫入今日工作總結
+2. **Telegram Channel**: 發送到 `@doctormomo` 頻道分享給粉絲
+
+### Telegram 發文格式
+```
+🛠️ 今日專案完成：{專案名稱}
+
+{一句話描述}
+
+✅ 完成內容：
+• {項目1}
+• {項目2}
+• {項目3}
+
+🔗 {GitHub URL}
+
+#project
+```
+
+### Telegram 設定
+- Bot Token: 參考 `yt-readwise-telegram-bridge/.env`
+- Channel ID: `-1003343749472`
+
+---
+
 ## 重要提醒
 
 1. **永遠先讀 Log**: 確保了解專案當前狀態
 2. **任務完成即更新 Log**: 不要等到最後才記錄
 3. **保持文件同步**: PRD/TECHSTACK 有變動要通知相關 subagent
 4. **Git 常態化**: 有意義的變更就 commit
+5. **日結發布**: 專案完成時執行 `/daily-summary`
