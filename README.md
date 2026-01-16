@@ -6,31 +6,44 @@
 
 - 同步 Claude Code 設定（`~/.claude/settings.json`）
 - 同步 Windows Terminal 設定
-- 同步自訂 Slash Commands
+- 同步全域 Slash Commands（`~/.claude/commands/`）
 - 設定環境變數（ANTHROPIC_API_KEY）
 
 ## 快速開始
 
 ### 在新電腦上安裝
 
-1. Clone 這個 repo：
-   ```powershell
-   git clone https://github.com/YOUR_USERNAME/ClaudeSetup.git
-   cd ClaudeSetup
-   ```
+**Step 1**: Clone 並執行安裝腳本
+```powershell
+git clone https://github.com/tnfsp/ClaudeSetup.git
+cd ClaudeSetup
 
-2. 執行安裝腳本：
-   ```powershell
-   # 允許執行腳本（如果尚未設定）
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+# 允許執行腳本（如果尚未設定）
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-   # 執行安裝
-   .\scripts\install.ps1
-   ```
+# 執行安裝
+.\scripts\install.ps1
+```
 
-3. 依提示輸入 API Key
+**Step 2**: 設定 MCP Servers（需手動執行）
 
-4. 重新啟動 Windows Terminal
+MCP servers 使用 OAuth 認證，無法自動化，需要手動添加：
+
+```powershell
+# Heptabase MCP（會彈出瀏覽器進行 OAuth 認證）
+claude mcp add --transport http heptabase-mcp https://api.heptabase.com/mcp
+
+# GitHub MCP（需要你的 GitHub Personal Access Token）
+# 到 https://github.com/settings/tokens 建立 token
+claude mcp add -e GITHUB_TOKEN=你的_TOKEN github -- npx -y @modelcontextprotocol/server-github
+```
+
+**Step 3**: 驗證設定
+```powershell
+claude mcp list
+```
+
+**Step 4**: 重新啟動 Windows Terminal
 
 ### 從現有電腦匯出設定
 
@@ -62,15 +75,24 @@ ClaudeSetup/
 
 ## 注意事項
 
+### MCP Servers 說明
+
+Claude Code 的 MCP servers 分為兩種：
+
+1. **在 `settings.json` 裡的 stdio MCP**：會被 install.ps1 自動安裝
+2. **用 `claude mcp add` 添加的 HTTP MCP**：需要手動設定（如 Heptabase）
+
+HTTP MCP 使用 OAuth 認證，憑證存在 `~/.claude/.credentials.json`，這個檔案**不會**也**不應該**被同步（包含敏感 tokens）。
+
 ### 路徑調整
 
-`settings.json` 中的 MCP server 路徑是硬編碼的，安裝後可能需要手動調整：
+`settings.json` 中的 MCP server 路徑是硬編碼的，安裝後需要手動調整：
 
 ```json
 {
   "mcpServers": {
     "example": {
-      "cwd": "C:\\Users\\YOUR_USERNAME\\..."  // 需要改成你的路徑
+      "cwd": "C:\\Users\\YOUR_USERNAME\\..."  // 改成你的路徑
     }
   }
 }
@@ -78,9 +100,10 @@ ClaudeSetup/
 
 ### 安全性
 
-- API Key 等敏感資料不會存入 Git
-- 安裝時會提示輸入
-- 請勿將 `.env` 檔案 commit 到 repo
+- API Key、OAuth tokens 等敏感資料不會存入 Git
+- 安裝時會提示輸入 ANTHROPIC_API_KEY
+- MCP OAuth 認證需要在新電腦上重新進行
+- 請勿將 `.env` 或 `.credentials.json` commit 到 repo
 
 ## 腳本參數
 
