@@ -61,6 +61,19 @@ if (Test-Path $cmdSrc) {
 } else {
     Write-Host "  No custom commands found." -ForegroundColor DarkGray
 }
+Write-Host ""
+
+# Export custom skills
+$skillSrc = Join-Path $env:USERPROFILE ".claude\skills"
+$skillDst = Join-Path $ConfigsDir "claude\skills"
+Write-Host "Processing: Claude Code custom skills" -ForegroundColor Yellow
+if (Test-Path $skillSrc) {
+    if (-not (Test-Path $skillDst)) { New-Item -ItemType Directory -Path $skillDst -Force | Out-Null }
+    Copy-Item -Path "$skillSrc\*" -Destination $skillDst -Recurse -Force
+    Write-Host "  Exported to: $skillDst" -ForegroundColor Green
+} else {
+    Write-Host "  No custom skills found." -ForegroundColor DarkGray
+}
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan

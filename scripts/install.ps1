@@ -69,6 +69,19 @@ if (Test-Path $cmdSrc) {
 }
 Write-Host ""
 
+# Custom skills
+$skillSrc = Join-Path $ConfigsDir "claude\skills"
+$skillDst = Join-Path $env:USERPROFILE ".claude\skills"
+Write-Host "Processing: Claude Code custom skills" -ForegroundColor Yellow
+if (Test-Path $skillSrc) {
+    if (-not (Test-Path $skillDst)) { New-Item -ItemType Directory -Path $skillDst -Force | Out-Null }
+    Copy-Item -Path "$skillSrc\*" -Destination $skillDst -Recurse -Force
+    Write-Host "  Installed to: $skillDst" -ForegroundColor Green
+} else {
+    Write-Host "  No custom skills found." -ForegroundColor DarkGray
+}
+Write-Host ""
+
 # Environment variables
 if (-not $SkipEnvSetup) {
     Write-Host "========================================" -ForegroundColor Cyan
@@ -93,7 +106,16 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Installation Complete!" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Notes:" -ForegroundColor White
-Write-Host "  - Restart Windows Terminal for changes to take effect." -ForegroundColor Gray
-Write-Host "  - Check mcpServers paths in ~/.claude/settings.json" -ForegroundColor Gray
+Write-Host "Next Steps:" -ForegroundColor White
+Write-Host "  1. Restart Windows Terminal" -ForegroundColor Gray
+Write-Host "  2. Check mcpServers paths in ~/.claude/settings.json" -ForegroundColor Gray
+Write-Host "  3. Setup MCP Servers (requires manual auth):" -ForegroundColor Gray
+Write-Host ""
+Write-Host "     # Heptabase MCP" -ForegroundColor DarkCyan
+Write-Host "     claude mcp add --transport http heptabase-mcp https://api.heptabase.com/mcp" -ForegroundColor White
+Write-Host ""
+Write-Host "     # GitHub MCP" -ForegroundColor DarkCyan
+Write-Host "     claude mcp add -e GITHUB_TOKEN=YOUR_TOKEN github -- npx -y @modelcontextprotocol/server-github" -ForegroundColor White
+Write-Host ""
+Write-Host "  4. Verify: claude mcp list" -ForegroundColor Gray
 Write-Host ""

@@ -1,0 +1,8 @@
+{
+  "input_path": "D:/iCloud Photos/Photos",
+  "output_target": "heptabase",
+  "tracking_file": "./processed.json",
+  "journal_format": "todo",
+  "skip_types": ["food", "selfie", "meme", "daily_photo"],
+  "ask_before_medical": true
+}

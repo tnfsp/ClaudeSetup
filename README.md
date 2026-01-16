@@ -7,11 +7,12 @@
 - 同步 Claude Code 設定（`~/.claude/settings.json`）
 - 同步 Windows Terminal 設定
 - 同步全域 Slash Commands（`~/.claude/commands/`）
+- 同步全域 Skills（`~/.claude/skills/`）
 - 設定環境變數（ANTHROPIC_API_KEY）
 
 ## 快速開始
 
-### 在新電腦上安裝
+### 在新電腦上完整部署
 
 **Step 1**: Clone 並執行安裝腳本
 ```powershell
@@ -43,35 +44,116 @@ claude mcp add -e GITHUB_TOKEN=你的_TOKEN github -- npx -y @modelcontextprotoc
 claude mcp list
 ```
 
-**Step 4**: 重新啟動 Windows Terminal
+**Step 4**: Clone 所有專案（見下方列表）
+
+**Step 5**: 重新啟動 Windows Terminal
 
 ### 從現有電腦匯出設定
 
 ```powershell
-.\scripts\export.ps1
+.\scripts\export.ps1 -Force
+git add . && git commit -m "chore: 更新設定" && git push
 ```
 
-使用 `-Force` 覆蓋現有檔案：
+---
+
+## 所有專案 Git Clone 指令
+
+### 模板
 ```powershell
-.\scripts\export.ps1 -Force
+git clone https://github.com/tnfsp/template.git
 ```
+
+### 開發中專案
+```powershell
+git clone https://github.com/tnfsp/nous-digital-twin.git
+git clone https://github.com/tnfsp/tool-optimize-dev-workflow.git
+```
+
+### 研究專案
+```powershell
+git clone https://github.com/tnfsp-research/research-technical-transeptal-lvad-centrimag.git
+git clone https://github.com/tnfsp-research/research-bentall-pseudoaneurysm.git
+git clone https://github.com/tnfsp-research/research-ecpr-pci.git
+git clone https://github.com/tnfsp-research/thesis-supervisor-phd.git
+git clone https://github.com/tnfsp-research/research-tavi-explant.git
+git clone https://github.com/tnfsp-research/research-tavi-dapt-vs-noac.git
+```
+
+### 工具專案
+```powershell
+git clone https://github.com/tnfsp/ClaudeSetup.git
+git clone https://github.com/tnfsp/heptabase-tools.git
+git clone https://github.com/tnfsp/project-github-sync.git
+git clone https://github.com/tnfsp/screenshot-to-knowledge.git
+git clone https://github.com/tnfsp/telegram-bot.git
+git clone https://github.com/tnfsp/readwise_bot.git
+git clone https://github.com/tnfsp/chatgpt-export-viewer.git
+git clone https://github.com/tnfsp/BroadcastChannel.git
+```
+
+### 學習專案
+```powershell
+git clone https://github.com/tnfsp/coding-learning.git
+git clone https://github.com/tnfsp/cardiac-surgery-learning.git
+```
+
+### 網站/品牌
+```powershell
+git clone https://github.com/tnfsp/new_website.git
+git clone https://github.com/tnfsp/brand.git
+```
+
+### 醫療應用
+```powershell
+git clone https://github.com/tnfsp/cardiac-echo.git
+git clone https://github.com/tnfsp/claude-icu-simulator.git
+git clone https://github.com/tnfsp/ICU-stimulator.git
+git clone https://github.com/tnfsp/presentation_HM3.git
+```
+
+---
+
+## 同步內容說明
+
+### 自動同步（install.ps1）
+
+| 項目 | 來源 | 目標 |
+|------|------|------|
+| Claude 設定 | `configs/claude/settings.json` | `~/.claude/settings.json` |
+| 全域 Commands | `configs/claude/commands/` | `~/.claude/commands/` |
+| 全域 Skills | `configs/claude/skills/` | `~/.claude/skills/` |
+| Windows Terminal | `configs/terminal/settings.json` | `%LOCALAPPDATA%/Packages/.../settings.json` |
+
+### 需手動設定
+
+| 項目 | 原因 | 設定方式 |
+|------|------|----------|
+| Heptabase MCP | OAuth 認證 | `claude mcp add --transport http heptabase-mcp https://api.heptabase.com/mcp` |
+| GitHub MCP | 需要 Token | `claude mcp add -e GITHUB_TOKEN=xxx github -- npx -y @modelcontextprotocol/server-github` |
+| ANTHROPIC_API_KEY | 敏感資料 | install.ps1 會提示輸入 |
+
+---
 
 ## 目錄結構
 
 ```
 ClaudeSetup/
-├── configs/                    # 設定檔
-│   ├── claude/                 # Claude Code 設定
-│   │   ├── settings.json
-│   │   └── commands/           # 自訂 slash commands
-│   └── terminal/               # Windows Terminal 設定
-│       └── settings.json
+├── configs/
+│   ├── claude/
+│   │   ├── settings.json       # Claude Code 全域設定
+│   │   ├── commands/           # 全域 slash commands
+│   │   └── skills/             # 全域 skills
+│   └── terminal/
+│       └── settings.json       # Windows Terminal 設定
 ├── scripts/
 │   ├── install.ps1             # 安裝腳本
 │   └── export.ps1              # 匯出腳本
 ├── .env.example                # 環境變數範本
 └── README.md
 ```
+
+---
 
 ## 注意事項
 
@@ -105,6 +187,8 @@ HTTP MCP 使用 OAuth 認證，憑證存在 `~/.claude/.credentials.json`，這�
 - MCP OAuth 認證需要在新電腦上重新進行
 - 請勿將 `.env` 或 `.credentials.json` commit 到 repo
 
+---
+
 ## 腳本參數
 
 ### install.ps1
@@ -120,19 +204,15 @@ HTTP MCP 使用 OAuth 認證，憑證存在 `~/.claude/.credentials.json`，這�
 |------|------|
 | `-Force` | 強制覆蓋現有檔案 |
 
+---
+
 ## 維護指令
 
 ### /update - 更新設定
 
 執行 `/update` 可以重新收集目前電腦的設定，更新到 repo。
 
-## 開發
-
-此專案使用 Claude Code 的 Subagent 架構開發。
-
-- `/concept` - 概念設計師
-- `/pm` - 專案經理
-- `/update` - 更新設定
+---
 
 ## License
 
