@@ -86,7 +86,41 @@
 - [x] 更新 README.md
 - [x] 建立 /update subagent
 - [x] 初始化 Git repo（已完成 commit）
-- [ ] 推送到 GitHub（待設定 remote）
+- [x] 推送到 GitHub
+- [ ] 在新電腦上測試完整流程
+
+---
+
+## Session: 2026-01-16 16:00
+
+### 變更摘要
+- 完善全域設定同步功能
+- 新增 Skills 目錄同步（`~/.claude/skills/`）
+- 匯出 6 個全域 Commands 到 `configs/claude/commands/`
+- 匯出 1 個全域 Skill（screenshot-to-knowledge）到 `configs/claude/skills/`
+- 更新 `export.ps1` 支援 skills 匯出
+- 更新 `install.ps1` 支援 skills 安裝，並在結尾顯示 MCP 設定指引
+- 更新 `README.md`：
+  - 加入完整的新電腦部署流程
+  - 加入所有專案 git clone 指令（25 個 repos）
+  - 說明 MCP servers 的兩種類型（stdio vs HTTP OAuth）
+  - 加入同步內容說明表格
+
+### 決策記錄
+- **MCP 設定無法自動化**：Heptabase MCP 使用 HTTP + OAuth 認證，憑證存在 `~/.claude/.credentials.json`，包含敏感 tokens，不應同步到 Git。需在新電腦手動執行 `claude mcp add` 重新認證。
+- **全域設定分類**：
+  - 自動同步：settings.json、commands/、skills/、Windows Terminal
+  - 手動設定：MCP servers（OAuth）、ANTHROPIC_API_KEY、路徑調整
+- **專案列表維護**：將所有 25 個專案的 git clone 指令列入 README，方便新電腦快速 clone
+
+### 待辦事項
+- [x] 匯出全域 commands
+- [x] 匯出全域 skills
+- [x] 更新 export.ps1 支援 skills
+- [x] 更新 install.ps1 支援 skills
+- [x] 更新 README 加入所有專案 git clone 指令
+- [x] 說明 MCP 設定流程
+- [x] 推送到 GitHub
 - [ ] 在新電腦上測試完整流程
 
 ---
