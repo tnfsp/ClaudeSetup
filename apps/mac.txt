@@ -51,8 +51,12 @@ rectangle            # 視窗管理
 # 工作/遠端工具
 # ==========================================
 vmware-horizon-client  # VMware Horizon 遠端桌面
-# ivanti-secure-access  # Ivanti Pulse Secure (可能需從官網下載)
-# typeless             # 打字工具 (需確認 Homebrew 名稱)
+
+# ==========================================
+# 需手動下載的 APP (不在 Homebrew)
+# ==========================================
+# Typeless - AI 語音轉文字: https://www.typeless.com
+# Ivanti Secure Access Client (Pulse Secure) - VPN: 從公司 IT 或 Ivanti 官網下載
 
 # ==========================================
 # 文件/研究工具
