@@ -125,4 +125,91 @@
 
 ---
 
+## Session: 2026-01-20 (Mac mini 遷移規劃)
+
+### 變更摘要
+
+#### ClaudeSetup 跨平台擴展
+- 新增 `scripts/install.sh` - macOS 安裝腳本
+- 新增 `scripts/export.sh` - macOS 匯出腳本
+- 新增 `apps/mac.txt` - Homebrew APP 安裝清單
+- 新增 `apps/windows.txt` - Winget APP 安裝清單
+- 更新 `README.md` - 跨平台使用說明
+
+#### APP 安裝清單（Homebrew）
+- AI 工具：Claude Desktop, Claude Code CLI
+- 開發工具：VS Code, iTerm2, Node.js, Python, Git, GitHub CLI
+- 生產力：Heptabase, Notion, Anki, Quarto
+- 通訊：Telegram, Discord
+- 媒體：Rekordbox
+- 系統：Raycast, Rectangle
+- 遠端：VMware Horizon Client
+- 手動下載：Typeless, Ivanti Secure Access
+
+#### 專案盤點與整理
+- 盤點 Project 資料夾：共 28 個專案（原以為 25 個）
+- 清理 `0. Template` 暫存資料夾（56 個 tmpclaude-*）
+- 清理 ClaudeSetup 暫存資料夾
+
+#### 新建 GitHub Repo
+| 專案 | Repo | 權限 |
+|------|------|------|
+| 研究_謝老闆 LV pseudoaneurysm | tnfsp-research/research-case-lv-pseudoaneurysm | Private |
+| 研究_謝老闆 MAC | tnfsp-research/research-case-mac | Private |
+| 研究_謝老闆 Venovo | tnfsp-research/research-case-venovo | Private |
+| 研究_謝醫師 LAD fistula to PA | tnfsp-research/research-case-lad-fistula-pa | Private |
+| idea-archive（7 個想法專案）| tnfsp/idea-archive | Private |
+| 研究_Metaanalysis_refractory | tnfsp-research/research-metaanalysis-refractory | Private |
+| 年度OP統計 | tnfsp/annual-op-statistics | Private |
+| DATABASE | tnfsp/database-archive | Private |
+
+#### 其他處理
+- 刪除 tnfsp 下 4 個重複的舊 repo
+- 研究專案 /data/ 資料夾確認已追蹤
+- 財務助手更新 .gitignore 排除敏感資料
+
+### 決策記錄
+
+1. **跨平台支援**：擴展 ClaudeSetup 支援 macOS，使用 Homebrew 批次安裝
+2. **環境變數統一管理**：
+   - 所有專案共用 `~/Project/.env.master`
+   - 透過 `~/.zshrc` 的 `source` 載入
+   - 敏感資料不進 Git，需手動複製到新電腦（USB）
+3. **研究專案分類**：
+   - 研究相關 → tnfsp-research（Private）
+   - 其他專案 → tnfsp
+4. **敏感資料處理**：
+   - 財務助手：.xlsx, .back, .sqlite 等檔案加入 .gitignore
+   - 研究 /data/：確認為文獻篩選資料，可傳上 Private repo
+
+### Mac mini 遷移清單
+
+```bash
+# 1. 準備（Windows）
+# - 複製 .env.master 到 USB
+# - 複製研究 /data/ 和財務備份到 USB（如需要）
+
+# 2. Mac mini 到手後
+xcode-select --install
+git clone https://github.com/tnfsp/ClaudeSetup.git
+cd ClaudeSetup
+cp /Volumes/USB/.env.master ~/Project/
+chmod +x scripts/install.sh
+./scripts/install.sh
+source ~/.zshrc
+
+# 3. 設定 MCP
+claude mcp add --transport http heptabase-mcp https://api.heptabase.com/mcp
+claude mcp add -e GITHUB_TOKEN=$GITHUB_TOKEN github -- npx -y @modelcontextprotocol/server-github
+
+# 4. Clone 所有專案（見 README）
+```
+
+### 待辦事項
+- [ ] Mac mini 到手後測試完整遷移流程
+- [ ] 確認所有專案在 Mac 上正常運作
+- [ ] 測試 .env.master 環境變數載入
+
+---
+
 <!-- 新的 session 記錄請加在這裡 -->
