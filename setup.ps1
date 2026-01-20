@@ -102,7 +102,7 @@ Write-Host "[Done] Environment variables updated" -ForegroundColor Green
 Write-Host ""
 
 # Install Claude Code CLI
-Write-Host "[Step 5/4] Installing Claude Code CLI..." -ForegroundColor Cyan
+Write-Host "[Step 5/5] Installing Claude Code CLI..." -ForegroundColor Cyan
 try {
     # Check if npm is available
     $npmVersion = npm --version 2>$null

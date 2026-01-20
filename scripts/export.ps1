@@ -56,8 +56,12 @@ $cmdDst = Join-Path $ConfigsDir "claude\commands"
 Write-Host "Processing: Claude Code custom commands" -ForegroundColor Yellow
 if (Test-Path $cmdSrc) {
     if (-not (Test-Path $cmdDst)) { New-Item -ItemType Directory -Path $cmdDst -Force | Out-Null }
-    Copy-Item -Path "$cmdSrc\*" -Destination $cmdDst -Recurse -Force
-    Write-Host "  Exported to: $cmdDst" -ForegroundColor Green
+    if ((Test-Path $cmdDst) -and (Get-ChildItem $cmdDst -ErrorAction SilentlyContinue) -and (-not $Force)) {
+        Write-Host "  Target exists. Use -Force to overwrite." -ForegroundColor DarkYellow
+    } else {
+        Copy-Item -Path "$cmdSrc\*" -Destination $cmdDst -Recurse -Force
+        Write-Host "  Exported to: $cmdDst" -ForegroundColor Green
+    }
 } else {
     Write-Host "  No custom commands found." -ForegroundColor DarkGray
 }
@@ -69,8 +73,12 @@ $skillDst = Join-Path $ConfigsDir "claude\skills"
 Write-Host "Processing: Claude Code custom skills" -ForegroundColor Yellow
 if (Test-Path $skillSrc) {
     if (-not (Test-Path $skillDst)) { New-Item -ItemType Directory -Path $skillDst -Force | Out-Null }
-    Copy-Item -Path "$skillSrc\*" -Destination $skillDst -Recurse -Force
-    Write-Host "  Exported to: $skillDst" -ForegroundColor Green
+    if ((Test-Path $skillDst) -and (Get-ChildItem $skillDst -ErrorAction SilentlyContinue) -and (-not $Force)) {
+        Write-Host "  Target exists. Use -Force to overwrite." -ForegroundColor DarkYellow
+    } else {
+        Copy-Item -Path "$skillSrc\*" -Destination $skillDst -Recurse -Force
+        Write-Host "  Exported to: $skillDst" -ForegroundColor Green
+    }
 } else {
     Write-Host "  No custom skills found." -ForegroundColor DarkGray
 }

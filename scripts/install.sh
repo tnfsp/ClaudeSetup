@@ -40,7 +40,18 @@ echo ""
 echo -e "${YELLOW}Checking Homebrew...${NC}"
 if ! command -v brew &> /dev/null; then
     echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Check network connectivity first
+    if ! curl -s --head --connect-timeout 5 https://raw.githubusercontent.com > /dev/null; then
+        echo -e "${RED}  Error: Cannot reach GitHub. Please check your internet connection.${NC}"
+        echo -e "${YELLOW}  You can install Homebrew manually: https://brew.sh${NC}"
+        exit 1
+    fi
+
+    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+        echo -e "${RED}  Error: Homebrew installation failed.${NC}"
+        echo -e "${YELLOW}  Please try installing manually: https://brew.sh${NC}"
+        exit 1
+    fi
 
     # 加入 PATH (Apple Silicon)
     if [[ -f "/opt/homebrew/bin/brew" ]]; then
@@ -94,10 +105,12 @@ if [ -f "$CLAUDE_DIR/settings.json" ]; then
     echo "  Backed up existing settings.json"
 fi
 
-# 複製設定檔
+# 複製設定檔（展開 ~/Project 為實際路徑）
 if [ -f "$CONFIGS_DIR/claude/settings.json" ]; then
-    cp "$CONFIGS_DIR/claude/settings.json" "$CLAUDE_DIR/"
+    # Replace ~/Project with actual $HOME/Project path
+    sed "s|~/Project|$HOME/Project|g" "$CONFIGS_DIR/claude/settings.json" > "$CLAUDE_DIR/settings.json"
     echo -e "${GREEN}  Installed: ~/.claude/settings.json${NC}"
+    echo "  (Paths updated for this machine)"
 fi
 
 # 複製 commands
@@ -127,10 +140,15 @@ if [ "$SKIP_ENV" = false ]; then
         if ! grep -q "source.*\.env\.master" "$ZSHRC" 2>/dev/null; then
             echo "" >> "$ZSHRC"
             echo "# ClaudeSetup - Load environment variables" >> "$ZSHRC"
-            echo "set -a" >> "$ZSHRC"
-            echo "source \"$ENV_MASTER\"" >> "$ZSHRC"
-            echo "set +a" >> "$ZSHRC"
-            echo -e "${GREEN}  Added .env.master to ~/.zshrc${NC}"
+            echo "# Note: Only specific variables are exported to avoid leaking sensitive data" >> "$ZSHRC"
+            echo "if [ -f \"$ENV_MASTER\" ]; then" >> "$ZSHRC"
+            echo "    export ANTHROPIC_API_KEY=\$(grep '^ANTHROPIC_API_KEY=' \"$ENV_MASTER\" | cut -d'=' -f2-)" >> "$ZSHRC"
+            echo "    export GITHUB_TOKEN=\$(grep '^GITHUB_TOKEN=' \"$ENV_MASTER\" | cut -d'=' -f2-)" >> "$ZSHRC"
+            echo "    export OPENAI_API_KEY=\$(grep '^OPENAI_API_KEY=' \"$ENV_MASTER\" | cut -d'=' -f2-)" >> "$ZSHRC"
+            echo "    export SUPABASE_URL=\$(grep '^SUPABASE_URL=' \"$ENV_MASTER\" | cut -d'=' -f2-)" >> "$ZSHRC"
+            echo "    export SUPABASE_KEY=\$(grep '^SUPABASE_KEY=' \"$ENV_MASTER\" | cut -d'=' -f2-)" >> "$ZSHRC"
+            echo "fi" >> "$ZSHRC"
+            echo -e "${GREEN}  Added .env.master to ~/.zshrc (explicit exports only)${NC}"
         else
             echo "  .env.master already configured in ~/.zshrc"
         fi
@@ -141,7 +159,41 @@ if [ "$SKIP_ENV" = false ]; then
 fi
 
 # ==========================================
-# 5. 完成
+# 5. Clone 必要專案 (nous MCP)
+# ==========================================
+echo -e "${YELLOW}Setting up required projects...${NC}"
+
+PROJECT_DIR="$HOME/Project"
+mkdir -p "$PROJECT_DIR"
+
+# Clone nous (數位分身 MCP server)
+if [ ! -d "$PROJECT_DIR/nous" ]; then
+    echo "  Cloning nous (personal knowledge base MCP)..."
+    if git clone https://github.com/tnfsp/nous.git "$PROJECT_DIR/nous" 2>/dev/null; then
+        echo -e "${GREEN}  Cloned: ~/Project/nous${NC}"
+
+        # Install nous dependencies
+        echo "  Installing nous dependencies..."
+        cd "$PROJECT_DIR/nous"
+        if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt 2>/dev/null || pip3 install -r requirements.txt 2>/dev/null || true
+        fi
+        if [ -f "pyproject.toml" ]; then
+            pip install -e . 2>/dev/null || pip3 install -e . 2>/dev/null || true
+        fi
+        cd "$REPO_ROOT"
+        echo -e "${GREEN}  nous installed${NC}"
+    else
+        echo -e "${YELLOW}  Could not clone nous (may need GitHub auth or repo doesn't exist)${NC}"
+        echo "  You can clone manually: git clone https://github.com/tnfsp/nous.git ~/Project/nous"
+    fi
+else
+    echo -e "${GREEN}  nous already exists at ~/Project/nous${NC}"
+fi
+echo ""
+
+# ==========================================
+# 6. 完成
 # ==========================================
 echo -e "${CYAN}========================================"
 echo -e "${GREEN}  Installation Complete!"

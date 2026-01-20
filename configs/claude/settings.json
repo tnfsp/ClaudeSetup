@@ -7,9 +7,9 @@
         "-m",
         "nous_mcp.server"
       ],
-      "cwd": "C:\\Users\\Yuru Hung\\Desktop\\Project\\數位分身",
+      "cwd": "~/Project/nous",
       "env": {
-        "PYTHONPATH": "C:\\Users\\Yuru Hung\\Desktop\\Project\\數位分身"
+        "PYTHONPATH": "~/Project/nous"
       }
     }
   },

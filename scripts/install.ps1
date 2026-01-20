@@ -29,8 +29,13 @@ if (Test-Path $src1) {
         Copy-Item -Path $dst1 -Destination (Join-Path $BackupDir "settings.json") -Force
         Write-Host "  Backed up existing file" -ForegroundColor DarkGray
     }
-    Copy-Item -Path $src1 -Destination $dst1 -Force
+    # Read and replace ~/Project with actual path
+    $settingsContent = Get-Content -Path $src1 -Raw
+    $projectPath = Join-Path $env:USERPROFILE "Project"
+    $settingsContent = $settingsContent -replace '~/Project', $projectPath.Replace('\', '\\')
+    Set-Content -Path $dst1 -Value $settingsContent -Encoding UTF8
     Write-Host "  Installed to: $dst1" -ForegroundColor Green
+    Write-Host "  (Paths updated for this machine)" -ForegroundColor DarkGray
 } else {
     Write-Host "  Source not found, skipped." -ForegroundColor Red
 }
