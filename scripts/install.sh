@@ -39,8 +39,8 @@ echo ""
 # ==========================================
 echo -e "${YELLOW}Pre-flight checks...${NC}"
 
-# 檢查 .env.master
-ENV_MASTER="$REPO_ROOT/.env.master"
+# 檢查 .env.master (統一放在 ~/Project/ 跟 Windows 一致)
+ENV_MASTER="$HOME/Project/.env.master"
 if [ ! -f "$ENV_MASTER" ]; then
     echo -e "${RED}  [!] .env.master not found!${NC}"
     echo ""

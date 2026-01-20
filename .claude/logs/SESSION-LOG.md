@@ -212,4 +212,40 @@ claude mcp add -e GITHUB_TOKEN=$GITHUB_TOKEN github -- npx -y @modelcontextproto
 
 ---
 
+## Session: 2026-01-20 14:30 (Code Audit & Mac 模擬)
+
+### 變更摘要
+
+#### Code Audit 修復
+- **Critical**: 修復 settings.json 硬編碼路徑 → 使用 `~/Project/nous` + 動態替換
+- **Warning**: install.sh `set -a` → 明確 export 個別變數（避免洩漏）
+- **Warning**: install.sh Homebrew 安裝加入網路錯誤處理
+- **Warning**: setup.ps1 步驟編號修正 [Step 5/4] → [Step 5/5]
+- **Warning**: export.ps1 -Force 一致性檢查
+- **Warning**: .env.example API key 格式調整
+
+#### Mac 模擬測試修復
+- mac.txt 格式清理（移除 inline comments）
+- 加入 Step 0 Pre-flight checks（.env.master、gh auth）
+- 加入 `touch "$ZSHRC"` 確保新 Mac 可用
+- 加入 Claude Code CLI npm 安裝
+- 加入 nous 自動 clone + 依賴安裝
+- 加入互動式 `gh auth login` 提示（clone 前檢查）
+- 加入 Step 6 安裝驗證
+
+#### .env.master 位置決策
+- 統一使用 `~/Project/.env.master`（跟 Windows 一致）
+
+### 決策記錄
+- **nous MCP 路徑**: 使用 `~/Project/nous`，install.sh 動態替換為實際 `$HOME/Project/nous`
+- **環境變數載入**: 只 export 特定變數（ANTHROPIC_API_KEY, GITHUB_TOKEN, OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY），不用 `set -a` 全載入
+- **.env.master 位置**: 統一放 `~/Project/.env.master`，新 Mac 需從 USB 複製到此位置
+
+### 待辦事項
+- [ ] Mac mini 到手後測試完整遷移流程
+- [ ] Git commit 今日變更
+- [ ] 執行 `/daily-summary` 日結
+
+---
+
 <!-- 新的 session 記錄請加在這裡 -->
