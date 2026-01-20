@@ -311,3 +311,17 @@ echo -e "${YELLOW}Manual Downloads:${NC}"
 echo "  - Typeless (AI 語音轉文字): https://www.typeless.com"
 echo "  - Ivanti Secure Access (VPN): 從公司 IT 下載"
 echo ""
+
+# ==========================================
+# 8. Clone 所有專案（可選）
+# ==========================================
+echo ""
+read -p "Clone all projects now? (Y/n): " clone_confirm
+if [[ ! "$clone_confirm" =~ ^[Nn]$ ]]; then
+    if [ -f "$REPO_ROOT/scripts/clone-all.sh" ]; then
+        chmod +x "$REPO_ROOT/scripts/clone-all.sh"
+        "$REPO_ROOT/scripts/clone-all.sh"
+    else
+        echo -e "${RED}clone-all.sh not found${NC}"
+    fi
+fi
