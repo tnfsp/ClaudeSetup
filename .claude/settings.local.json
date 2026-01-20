@@ -7,7 +7,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: 修復 PowerShell 腳本語法相容性問題\n\n- 簡化 install.ps1 和 export.ps1 語法\n- 避免 hashtable 陣列語法導致的解析錯誤\n- 新增 tmpclaude-* 到 .gitignore\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push:*)",
       "Bash(powershell -ExecutionPolicy Bypass -File \"C:/Users/Yuru Hung/Desktop/Project/2. Done/ClaudeSetup初始設定/scripts/send-telegram.ps1\")",
-      "Bash(powershell -ExecutionPolicy Bypass -File \"C:/Users/Yuru Hung/Desktop/Project/2. Done/ClaudeSetup初始設定/temp-send.ps1\")"
+      "Bash(powershell -ExecutionPolicy Bypass -File \"C:/Users/Yuru Hung/Desktop/Project/2. Done/ClaudeSetup初始設定/temp-send.ps1\")",
+      "Bash(git commit:*)"
     ]
   }
 }
