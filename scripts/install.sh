@@ -35,6 +35,42 @@ echo -e "========================================${NC}"
 echo ""
 
 # ==========================================
+# 0. 安裝前檢查
+# ==========================================
+echo -e "${YELLOW}Pre-flight checks...${NC}"
+
+# 檢查 .env.master
+ENV_MASTER="$REPO_ROOT/.env.master"
+if [ ! -f "$ENV_MASTER" ]; then
+    echo -e "${RED}  [!] .env.master not found!${NC}"
+    echo ""
+    echo "  This file contains your API keys and is required for:"
+    echo "  - Claude API (ANTHROPIC_API_KEY)"
+    echo "  - nous MCP (OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY)"
+    echo ""
+    echo "  Please copy .env.master from your old machine (via USB or secure transfer)"
+    echo "  to: $ENV_MASTER"
+    echo ""
+    read -p "  Continue without .env.master? (y/N): " confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        echo "  Aborted. Please add .env.master and run again."
+        exit 1
+    fi
+    echo ""
+else
+    echo -e "${GREEN}  .env.master found${NC}"
+fi
+
+# 檢查 GitHub 認證（用於 clone private repos）
+if command -v gh &> /dev/null && gh auth status &> /dev/null; then
+    echo -e "${GREEN}  GitHub CLI authenticated${NC}"
+else
+    echo -e "${YELLOW}  [!] GitHub CLI not authenticated (may fail to clone private repos)${NC}"
+    echo "      Run 'gh auth login' if needed"
+fi
+echo ""
+
+# ==========================================
 # 1. 安裝 Homebrew (如果還沒安裝)
 # ==========================================
 echo -e "${YELLOW}Checking Homebrew...${NC}"
@@ -85,6 +121,16 @@ if [ "$SKIP_APPS" = false ] && [ -f "$APPS_DIR/mac.txt" ]; then
             brew install --cask "$app" 2>/dev/null || echo "    (skipped or already installed)"
         fi
     done < "$APPS_DIR/mac.txt"
+
+    # 安裝 Claude Code CLI (npm)
+    echo ""
+    echo "Installing Claude Code CLI..."
+    if command -v npm &> /dev/null; then
+        npm install -g @anthropic-ai/claude-code 2>/dev/null || echo "  (Claude Code CLI install failed, try manually: npm install -g @anthropic-ai/claude-code)"
+        echo -e "${GREEN}  Claude Code CLI installed${NC}"
+    else
+        echo -e "${YELLOW}  npm not available yet. After restart, run: npm install -g @anthropic-ai/claude-code${NC}"
+    fi
     echo ""
 fi
 
@@ -132,8 +178,10 @@ echo ""
 if [ "$SKIP_ENV" = false ]; then
     echo -e "${YELLOW}Setting up environment variables...${NC}"
 
-    ENV_MASTER="$REPO_ROOT/.env.master"
     ZSHRC="$HOME/.zshrc"
+
+    # 確保 .zshrc 存在
+    touch "$ZSHRC"
 
     if [ -f "$ENV_MASTER" ]; then
         # 檢查是否已經加入
@@ -193,7 +241,38 @@ fi
 echo ""
 
 # ==========================================
-# 6. 完成
+# 6. 安裝驗證
+# ==========================================
+echo -e "${YELLOW}Verifying installation...${NC}"
+
+# 驗證 Claude Code CLI
+if command -v claude &> /dev/null; then
+    echo -e "${GREEN}  ✓ Claude Code CLI${NC}"
+else
+    echo -e "${RED}  ✗ Claude Code CLI (run: npm install -g @anthropic-ai/claude-code)${NC}"
+fi
+
+# 驗證 nous MCP
+if [ -d "$PROJECT_DIR/nous" ]; then
+    if python -c "import nous_mcp" 2>/dev/null || python3 -c "import nous_mcp" 2>/dev/null; then
+        echo -e "${GREEN}  ✓ nous MCP${NC}"
+    else
+        echo -e "${YELLOW}  △ nous MCP (cloned but dependencies may need install)${NC}"
+    fi
+else
+    echo -e "${RED}  ✗ nous MCP (not cloned)${NC}"
+fi
+
+# 驗證環境變數
+if [ -f "$ENV_MASTER" ]; then
+    echo -e "${GREEN}  ✓ .env.master${NC}"
+else
+    echo -e "${RED}  ✗ .env.master (API keys not configured)${NC}"
+fi
+echo ""
+
+# ==========================================
+# 7. 完成
 # ==========================================
 echo -e "${CYAN}========================================"
 echo -e "${GREEN}  Installation Complete!"
