@@ -216,6 +216,20 @@ mkdir -p "$PROJECT_DIR"
 
 # Clone nous (數位分身 MCP server)
 if [ ! -d "$PROJECT_DIR/nous" ]; then
+    # 檢查 GitHub 認證狀態
+    if ! gh auth status &> /dev/null; then
+        echo -e "${YELLOW}  GitHub CLI not authenticated (required for private repos)${NC}"
+        echo ""
+        echo "  Please authenticate first:"
+        echo -e "${CYAN}    gh auth login${NC}"
+        echo ""
+        read -p "  Run 'gh auth login' now? (Y/n): " auth_confirm
+        if [[ ! "$auth_confirm" =~ ^[Nn]$ ]]; then
+            gh auth login
+            echo ""
+        fi
+    fi
+
     echo "  Cloning nous (personal knowledge base MCP)..."
     if git clone https://github.com/tnfsp/nous.git "$PROJECT_DIR/nous" 2>/dev/null; then
         echo -e "${GREEN}  Cloned: ~/Project/nous${NC}"
@@ -232,8 +246,11 @@ if [ ! -d "$PROJECT_DIR/nous" ]; then
         cd "$REPO_ROOT"
         echo -e "${GREEN}  nous installed${NC}"
     else
-        echo -e "${YELLOW}  Could not clone nous (may need GitHub auth or repo doesn't exist)${NC}"
-        echo "  You can clone manually: git clone https://github.com/tnfsp/nous.git ~/Project/nous"
+        echo -e "${YELLOW}  Could not clone nous${NC}"
+        echo "  You can clone manually after auth:"
+        echo -e "${CYAN}    gh auth login${NC}"
+        echo -e "${CYAN}    git clone https://github.com/tnfsp/nous.git ~/Project/nous${NC}"
+        echo -e "${CYAN}    cd ~/Project/nous && pip install -e .${NC}"
     fi
 else
     echo -e "${GREEN}  nous already exists at ~/Project/nous${NC}"
