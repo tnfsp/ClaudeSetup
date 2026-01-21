@@ -30,6 +30,7 @@ karabiner-elements
 mcbopomofo
 barrier
 stats
+jordanbaird-ice
 
 # 工作/遠端工具
 vmware-horizon-client
