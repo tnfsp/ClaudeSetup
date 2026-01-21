@@ -25,7 +25,6 @@ discord
 rekordbox
 
 # 系統工具
-raycast
 rectangle
 karabiner-elements
 mcbopomofo
