@@ -31,7 +31,6 @@ karabiner-elements
 mcbopomofo
 barrier
 stats
-itsycal
 
 # 工作/遠端工具
 vmware-horizon-client
